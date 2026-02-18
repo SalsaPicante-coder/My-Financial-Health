@@ -1,0 +1,308 @@
+/* ========================================
+   RESPONSIVE DESIGN - MOBILE & TABLET
+   ======================================== */
+
+/* Mobile Devices (< 768px) */
+@media (max-width: 767px) {
+  /* Layout Changes */
+  .app-shell {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 12px;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  /* Sidebar - Full width overlay */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  /* Topbar adjustments */
+  .topbar {
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .topbar h1 {
+    font-size: 1.25rem;
+  }
+
+  /* Period control */
+  .period-control {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .period-select,
+  .period-input {
+    width: 100%;
+  }
+
+  /* Cards - Single column */
+  .dashboard-grid,
+  .kpi-grid,
+  .list-header {
+    grid-template-columns: 1fr !important;
+  }
+
+  .kpi-grid {
+    gap: 12px;
+  }
+
+  /* KPI Cards - Compact */
+  .kpi-card {
+    padding: 16px;
+  }
+
+  .kpi-value {
+    font-size: 1.5rem;
+  }
+
+  /* Buttons - Touch-friendly */
+  .btn,
+  .btn-icon,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+  }
+
+  .btn-icon {
+    padding: 12px;
+  }
+
+  /* Forms - Better spacing */
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px;
+  }
+
+  /* Modal - Full screen on mobile */
+  .modal-content {
+    width: 95vw;
+    max-width: 95vw;
+    margin: 20px auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .modal-footer {
+    padding: 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  /* Payment cards */
+  .payment-card {
+    padding: 12px;
+  }
+
+  .payment-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .payment-card-amount {
+    font-size: 1.1rem;
+  }
+
+  /* Chart containers */
+  .chart-container {
+    height: 250px;
+  }
+
+  /* Navigation items */
+  .nav-item {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  /* Sidebar cards */
+  .sidebar-card {
+    padding: 16px;
+  }
+
+  /* History list */
+  .history-item {
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Goal cards */
+  .goal-card {
+    padding: 16px;
+  }
+
+  /* Hide less important info on mobile */
+  .kpi-subtitle {
+    font-size: 0.75rem;
+  }
+
+  /* Compact calendar */
+  .calendar-grid {
+    gap: 4px;
+  }
+
+  .calendar-day {
+    min-height: 40px;
+    font-size: 0.85rem;
+  }
+
+  /* List items more touch-friendly */
+  .list-item {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .list-item-actions {
+    gap: 8px;
+  }
+
+  /* Better badge sizing */
+  .badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+}
+
+/* Tablet Devices (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Layout - 2 column */
+  .app-shell {
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  /* Sidebar adjustments */
+  .sidebar {
+    width: 280px;
+    padding: 16px;
+  }
+
+  /* Cards - 2 columns where appropriate */
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Forms - 2 column when makes sense */
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Touch-friendly buttons still */
+  .btn,
+  .btn-icon,
+  button {
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  /* Modal sizing */
+  .modal-content {
+    width: 90vw;
+    max-width: 600px;
+  }
+
+  /* Chart sizing */
+  .chart-container {
+    height: 300px;
+  }
+
+  /* Better payment cards */
+  .payment-card {
+    padding: 16px;
+  }
+
+  /* Navigation */
+  .nav-item {
+    padding: 12px 16px;
+  }
+
+  /* Calendar */
+  .calendar-day {
+    min-height: 50px;
+  }
+}
+
+/* Desktop - Optimize for larger screens (> 1024px) */
+@media (min-width: 1025px) {
+  .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .modal-content {
+    max-width: 700px;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal-content {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .sidebar {
+    overflow-y: auto;
+  }
+}

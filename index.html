@@ -1,0 +1,1591 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Financial Health</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  </head>
+  <body data-theme="light">
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <nav class="nav">
+          <button
+            class="nav-item active"
+            data-section="dashboard"
+            aria-current="page"
+          >
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 13h6v7H4zM14 4h6v16h-6zM9 9h6v11H9z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+            <span data-i18n="nav.dashboard">Resumen</span>
+          </button>
+          <button class="nav-item" data-section="income">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 3v18M6 9l6-6 6 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span data-i18n="nav.income">Ingresos</span>
+          </button>
+          <button class="nav-item" data-section="fixed-expenses">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M6 4h12a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V6a2 2 0 0 1 2-2z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+            <span data-i18n="nav.fixed">Gastos fijos</span>
+          </button>
+          <button class="nav-item" data-section="variable-expenses">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M7 6h10M7 12h6M7 18h8"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span data-i18n="nav.variable">Gastos variables</span>
+          </button>
+          <button class="nav-item" data-section="payments">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 7h16v10H4z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+                <path d="M4 11h16" stroke="currentColor" stroke-width="2" />
+                <circle cx="8" cy="16" r="1.5" fill="currentColor" />
+                <circle cx="12" cy="16" r="1.5" fill="currentColor" />
+                <circle cx="16" cy="16" r="1.5" fill="currentColor" />
+              </svg>
+            </span>
+            <span data-i18n="nav.payments">Pagos</span>
+          </button>
+          <button class="nav-item" data-section="savings-goals">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 7h16v10H4z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+                <path d="M8 7V5h8v2" stroke="currentColor" stroke-width="2" />
+                <circle cx="12" cy="12" r="3" fill="currentColor" />
+              </svg>
+            </span>
+            <span data-i18n="nav.goals">Objetivos</span>
+          </button>
+          <button class="nav-item" data-section="history">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 4h16v16H4z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+                <path
+                  d="M8 8h8M8 12h8M8 16h5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span data-i18n="nav.history">Historial</span>
+          </button>
+          <button class="nav-item" data-section="settings">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span data-i18n="nav.settings">Ajustes</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-header">
+            <span data-i18n="period.label">Periodo</span>
+          </div>
+          <span class="badge" id="period-badge">Actual</span>
+          <div class="period-control">
+            <button
+              class="icon-button"
+              id="period-prev"
+              aria-label="Periodo anterior"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M15 6l-6 6 6 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <input type="month" id="month-year" value="" />
+            <button
+              class="icon-button"
+              id="period-next"
+              aria-label="Periodo siguiente"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 6l6 6-6 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <p class="muted" id="period-range">-</p>
+        </div>
+
+        <div class="sidebar-mini">
+          <div class="mini-item">
+            <span data-i18n="sidebar.available">Disponible</span>
+            <strong id="mini-available">$0.00</strong>
+          </div>
+          <div class="mini-item">
+            <span data-i18n="sidebar.savings">Ahorro</span>
+            <strong id="mini-savings">$0.00</strong>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle menu">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+            
+            <!-- Brand Moved Here -->
+            <div class="brand">
+              <div class="brand-mark">
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="brandGradient" x1="0" x2="1" y1="0" y2="1">
+                      <stop offset="0%" stop-color="#16a34a" />
+                      <stop offset="100%" stop-color="#0ea5a4" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="6" y="6" width="52" height="52" rx="16" fill="url(#brandGradient)" />
+                  <path d="M22 36c6 6 14 6 20 0" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+                  <path d="M24 26h16" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+                  <circle cx="24" cy="24" r="4" fill="#fff" />
+                </svg>
+              </div>
+              <div class="brand-text">
+                <span class="brand-title">My Financial Health</span>
+              </div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <div class="profile-chip">
+              <span class="profile-dot"></span>
+              <div>
+                <p class="profile-name" data-i18n="profile.name">
+                  Perfil local
+                </p>
+                <span class="profile-sub" data-i18n="profile.type"
+                  >Sincronización privada</span
+                >
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main class="content">
+          <div class="notice notice-closed" id="closed-banner" hidden>
+            <strong data-i18n="close.closedTitle">Mes cerrado</strong>
+            <span data-i18n="close.closedSubtitle"
+              >Este periodo es solo lectura.</span
+            >
+          </div>
+          <section
+            id="dashboard"
+            class="section active"
+            data-month-section="true"
+          >
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="dashboard.title">Resumen</h1>
+                <p class="muted" data-i18n="dashboard.subtitle">
+                  Vista general de tu mes en tiempo real.
+                </p>
+              </div>
+              <div class="header-actions">
+                <button
+                  class="btn btn-ghost"
+                  id="quick-add"
+                  data-section-target="variable-expenses"
+                  data-i18n="actions.quickAdd"
+                >
+                  + Registro
+                </button>
+                <button
+                  class="btn btn-primary"
+                  id="save-state"
+                  data-i18n="actions.save"
+                >
+                  Guardar
+                </button>
+                <button
+                  class="btn btn-ghost"
+                  id="refresh-state"
+                  data-i18n="actions.refresh"
+                >
+                  Recargar
+                </button>
+                <button
+                  class="btn btn-warning"
+                  id="close-month"
+                  data-i18n="actions.closeMonth"
+                >
+                  Finalizar mes
+                </button>
+              </div>
+            </div>
+
+            <div class="kpi-grid">
+              <button class="kpi-card" data-section-target="income">
+                <div class="kpi-icon">▸</div>
+                <h3 data-i18n="kpi.income">Ingresos</h3>
+                <p id="kpi-income">$0.00</p>
+                <span class="kpi-sub" id="kpi-income-sub">0 entradas</span>
+              </button>
+              <button class="kpi-card" data-section-target="fixed-expenses">
+                <div class="kpi-icon">▣</div>
+                <h3 data-i18n="kpi.expenses">Gastos totales</h3>
+                <p id="kpi-expenses">$0.00</p>
+                <span class="kpi-sub" id="kpi-expenses-sub">0 movimientos</span>
+              </button>
+              <button class="kpi-card" data-section-target="variable-expenses">
+                <div class="kpi-icon">◈</div>
+                <h3 data-i18n="kpi.variable">Gastos variables</h3>
+                <p id="kpi-variable">$0.00</p>
+                <span class="kpi-sub" id="kpi-variable-sub">0 categorías</span>
+              </button>
+              <button class="kpi-card" data-section-target="dashboard">
+                <div class="kpi-icon">◎</div>
+                <h3 data-i18n="kpi.available">Dinero disponible</h3>
+                <p id="kpi-available">$0.00</p>
+                <span class="kpi-sub" id="kpi-available-sub"
+                  >Después de ahorrar</span
+                >
+              </button>
+              <button class="kpi-card" data-section-target="savings-goals">
+                <div class="kpi-icon">◆</div>
+                <h3 data-i18n="kpi.savings">Ahorro total</h3>
+                <p id="kpi-savings">$0.00</p>
+                <span class="kpi-sub" id="kpi-savings-sub"
+                  >Sugerido del mes</span
+                >
+              </button>
+            </div>
+
+            <div class="grid-3">
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <h3 data-i18n="charts.money">
+                      Distribución general del dinero
+                    </h3>
+                    <div class="chart-controls">
+                      <select data-chart-type="money">
+                        <option
+                          value="doughnut"
+                          data-i18n="charts.typeDoughnut"
+                        >
+                          Dona
+                        </option>
+                        <option value="bar" data-i18n="charts.typeBar">
+                          Barras
+                        </option>
+                        <option value="line" data-i18n="charts.typeLine">
+                          Línea
+                        </option>
+                      </select>
+                      <select data-chart-palette="money">
+                        <option
+                          value="default"
+                          data-i18n="charts.paletteDefault"
+                        >
+                          Default
+                        </option>
+                        <option
+                          value="vibrant"
+                          data-i18n="charts.paletteVibrant"
+                        >
+                          Vibrante
+                        </option>
+                        <option value="soft" data-i18n="charts.paletteSoft">
+                          Suave
+                        </option>
+                      </select>
+                      <label class="toggle compact">
+                        <input type="checkbox" data-chart-compare="money" />
+                        <span class="toggle-slider"></span>
+                        <span data-i18n="charts.compare">Comparar meses</span>
+                      </label>
+                    </div>
+                  </div>
+                  <span class="chip" id="chart-money-total">$0.00</span>
+                </div>
+                <div class="chart-wrap">
+                  <canvas id="chart-money"></canvas>
+                </div>
+                <div class="chart-meta" id="chart-money-meta"></div>
+              </div>
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <h3 data-i18n="charts.categories">Gastos por categoría</h3>
+                    <div class="chart-controls">
+                      <select data-chart-type="categories">
+                        <option
+                          value="doughnut"
+                          data-i18n="charts.typeDoughnut"
+                        >
+                          Dona
+                        </option>
+                        <option value="bar" data-i18n="charts.typeBar">
+                          Barras
+                        </option>
+                        <option value="line" data-i18n="charts.typeLine">
+                          Línea
+                        </option>
+                      </select>
+                      <select data-chart-palette="categories">
+                        <option
+                          value="default"
+                          data-i18n="charts.paletteDefault"
+                        >
+                          Default
+                        </option>
+                        <option
+                          value="vibrant"
+                          data-i18n="charts.paletteVibrant"
+                        >
+                          Vibrante
+                        </option>
+                        <option value="soft" data-i18n="charts.paletteSoft">
+                          Suave
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <span class="chip" id="chart-category-total">$0.00</span>
+                </div>
+                <div class="chart-wrap">
+                  <canvas id="chart-categories"></canvas>
+                </div>
+                <div class="chart-meta" id="chart-category-meta"></div>
+              </div>
+              <div class="card chart-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <h3 data-i18n="charts.goals">Distribución del ahorro</h3>
+                    <div class="chart-controls">
+                      <select data-chart-type="goals">
+                        <option
+                          value="doughnut"
+                          data-i18n="charts.typeDoughnut"
+                        >
+                          Dona
+                        </option>
+                        <option value="bar" data-i18n="charts.typeBar">
+                          Barras
+                        </option>
+                        <option value="line" data-i18n="charts.typeLine">
+                          Línea
+                        </option>
+                      </select>
+                      <select data-chart-palette="goals">
+                        <option
+                          value="default"
+                          data-i18n="charts.paletteDefault"
+                        >
+                          Default
+                        </option>
+                        <option
+                          value="vibrant"
+                          data-i18n="charts.paletteVibrant"
+                        >
+                          Vibrante
+                        </option>
+                        <option value="soft" data-i18n="charts.paletteSoft">
+                          Suave
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <span class="chip" id="chart-goal-total">$0.00</span>
+                </div>
+                <div class="chart-wrap">
+                  <canvas id="chart-goals"></canvas>
+                </div>
+                <div class="chart-meta" id="chart-goal-meta"></div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card insight-card">
+                <div class="card-header">
+                  <h3 data-i18n="dashboard.insights">Insights del mes</h3>
+                </div>
+                <div class="insight-list" id="insight-list"></div>
+              </div>
+              <div class="card note-card">
+                <div class="card-header">
+                  <h3 data-i18n="dashboard.notes">Notas rápidas</h3>
+                </div>
+                <textarea
+                  id="month-notes"
+                  placeholder="Escribe recordatorios financieros para este periodo..."
+                  data-i18n-placeholder="notes.placeholder"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section id="income" class="section" data-month-section="true">
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="income.title">Ingresos</h1>
+                <p class="muted" data-i18n="income.subtitle">
+                  Registra ingresos recurrentes o únicos.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="income.add">Agregar ingreso</h3>
+                </div>
+                <form id="income-form" class="form-grid">
+                  <label>
+                    <span data-i18n="income.source">Fuente</span>
+                    <input
+                      type="text"
+                      id="income-name"
+                      placeholder="Salario, freelance..."
+                      data-i18n-placeholder="income.placeholder"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="income.amount">Monto</span>
+                    <input
+                      type="number"
+                      id="income-amount"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="income.date">Fecha</span>
+                    <input type="date" id="income-date" />
+                  </label>
+                  <button
+                    class="btn btn-primary"
+                    type="submit"
+                    data-i18n="actions.add"
+                  >
+                    Agregar
+                  </button>
+                </form>
+                <div class="divider"></div>
+                <div class="slider-block">
+                  <div class="slider-head">
+                    <h4 data-i18n="income.savingsPercent">
+                      Porcentaje de ahorro
+                    </h4>
+                    <span id="savings-percentage-value">10%</span>
+                  </div>
+                  <input
+                    type="range"
+                    id="savings-percentage"
+                    min="0"
+                    max="60"
+                    step="1"
+                    value="10"
+                  />
+                  <div class="slider-meta">
+                    <span data-i18n="income.savingsSuggested"
+                      >Ahorro sugerido</span
+                    >
+                    <strong id="savings-suggested">$0.00</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="income.list">Ingresos registrados</h3>
+                  <span class="chip" id="income-total">$0.00</span>
+                </div>
+                <div class="list" id="income-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            id="fixed-expenses"
+            class="section"
+            data-month-section="true"
+          >
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="fixed.title">Gastos fijos</h1>
+                <p class="muted" data-i18n="fixed.subtitle">
+                  Compromisos mensuales que se repiten.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="fixed.add">Agregar gasto fijo</h3>
+                </div>
+                <form id="fixed-form" class="form-grid">
+                  <label>
+                    <span data-i18n="expense.name">Nombre</span>
+                    <input
+                      type="text"
+                      id="fixed-name"
+                      placeholder="Renta, internet..."
+                      data-i18n-placeholder="fixed.placeholder"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="expense.amount">Monto</span>
+                    <input
+                      type="number"
+                      id="fixed-amount"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="expense.category">Categoría</span>
+                    <select id="fixed-category"></select>
+                  </label>
+                  <button
+                    class="btn btn-primary"
+                    type="submit"
+                    data-i18n="actions.add"
+                  >
+                    Agregar
+                  </button>
+                </form>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="fixed.list">Gastos fijos registrados</h3>
+                  <span class="chip" id="fixed-total">$0.00</span>
+                </div>
+                <div class="list" id="fixed-expense-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            id="variable-expenses"
+            class="section"
+            data-month-section="true"
+          >
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="variable.title">Gastos variables</h1>
+                <p class="muted" data-i18n="variable.subtitle">
+                  Compras, ocio y gastos flexibles.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="variable.add">Agregar gasto variable</h3>
+                </div>
+                <form id="variable-form" class="form-grid">
+                  <label>
+                    <span data-i18n="expense.name">Nombre</span>
+                    <input
+                      type="text"
+                      id="variable-name"
+                      placeholder="Supermercado, café..."
+                      data-i18n-placeholder="variable.placeholder"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="expense.amount">Monto</span>
+                    <input
+                      type="number"
+                      id="variable-amount"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="expense.category">Categoría</span>
+                    <select id="variable-category"></select>
+                  </label>
+                  <label>
+                    <span data-i18n="expense.date">Fecha</span>
+                    <input type="date" id="variable-date" />
+                  </label>
+                  <button
+                    class="btn btn-primary"
+                    type="submit"
+                    data-i18n="actions.add"
+                  >
+                    Agregar
+                  </button>
+                </form>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="variable.list">
+                    Gastos variables registrados
+                  </h3>
+                  <span class="chip" id="variable-total">$0.00</span>
+                </div>
+                <div class="list" id="variable-expense-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="payments" class="section" data-month-section="true">
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="payments.title">Pagos</h1>
+                <p class="muted" data-i18n="payments.subtitle">
+                  Controla deudas, servicios y cuotas en un calendario mensual.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="payments.add">Crear pago</h3>
+                </div>
+                <form id="payment-form" class="form-grid">
+                  <label>
+                    <span data-i18n="payments.name">Título</span>
+                    <input
+                      type="text"
+                      id="payment-title"
+                      placeholder="Renta, préstamo..."
+                      data-i18n-placeholder="payments.titlePlaceholder"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="payments.entity">Persona / entidad</span>
+                    <input
+                      type="text"
+                      id="payment-entity"
+                      placeholder="Banco, amigo, empresa"
+                      data-i18n-placeholder="payments.entityPlaceholder"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="payments.type">Tipo</span>
+                    <select id="payment-type">
+                      <option value="debt" data-i18n="payments.typeDebt">
+                        Deuda
+                      </option>
+                      <option
+                        value="installment"
+                        data-i18n="payments.typeInstallment"
+                      >
+                        Parcela
+                      </option>
+                      <option value="service" data-i18n="payments.typeService">
+                        Servicio
+                      </option>
+                      <option value="loan" data-i18n="payments.typeLoan">
+                        Préstamo
+                      </option>
+                      <option value="custom" data-i18n="payments.typeCustom">
+                        Personalizado
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    <span data-i18n="payments.description">Descripción</span>
+                    <input
+                      type="text"
+                      id="payment-description"
+                      placeholder="Detalle corto"
+                      data-i18n-placeholder="payments.descriptionPlaceholder"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="payments.amount">Monto</span>
+                    <input
+                      type="number"
+                      id="payment-amount"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="payments.date">Fecha</span>
+                    <input type="date" id="payment-date" required />
+                  </label>
+                  <div class="form-grid two-cols">
+                    <label>
+                      <span data-i18n="payments.installments">Parcelas</span>
+                      <input
+                        type="number"
+                        id="payment-installments"
+                        min="1"
+                        step="1"
+                        value="1"
+                      />
+                    </label>
+                    <label class="toggle compact">
+                      <input
+                        type="checkbox"
+                        id="payment-auto-installments"
+                        checked
+                      />
+                      <span class="toggle-slider"></span>
+                      <span data-i18n="payments.autoInstallments"
+                        >Continuar parcelas</span
+                      >
+                    </label>
+                  </div>
+                  <button
+                    class="btn btn-primary"
+                    type="submit"
+                    data-i18n="actions.add"
+                  >
+                    Agregar
+                  </button>
+                </form>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="payments.calendar">Calendario mensual</h3>
+                </div>
+                <div class="calendar-header">
+                  <button
+                    class="icon-button"
+                    id="payment-prev-month"
+                    aria-label="Mes anterior"
+                    data-allow-closed="true"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M15 6l-6 6 6 6"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <strong id="payment-month-label">-</strong>
+                  <button
+                    class="icon-button"
+                    id="payment-next-month"
+                    aria-label="Mes siguiente"
+                    data-allow-closed="true"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M9 6l6 6-6 6"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div class="calendar-grid" id="payment-calendar"></div>
+                <div class="calendar-legend">
+                  <span
+                    class="legend-item neutral"
+                    data-i18n="payments.legendNone"
+                    >Sin pagos</span
+                  >
+                  <span
+                    class="legend-item pending"
+                    data-i18n="payments.legendPending"
+                    >Pendientes</span
+                  >
+                  <span
+                    class="legend-item partial"
+                    data-i18n="payments.legendPartial"
+                    >Parciales</span
+                  >
+                  <span class="legend-item paid" data-i18n="payments.legendPaid"
+                    >Pagados</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 data-i18n="payments.dayTitle">Pagos del día</h3>
+                <span class="chip" id="payment-day-label">-</span>
+              </div>
+              <div id="payment-day-list" class="list"></div>
+            </div>
+          </section>
+
+          <section id="savings-goals" class="section" data-month-section="true">
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="goals.title">Objetivos de ahorro</h1>
+                <p class="muted" data-i18n="goals.subtitle">
+                  Distribuye tu ahorro mensual y controla el progreso.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="goals.summary">Resumen del ahorro</h3>
+                </div>
+                <div class="summary-grid">
+                  <div>
+                    <span data-i18n="goals.suggested">Ahorro sugerido</span>
+                    <strong id="savings-suggested-total">$0.00</strong>
+                  </div>
+                  <div>
+                    <span data-i18n="goals.distributed"
+                      >Ahorro distribuido</span
+                    >
+                    <strong id="savings-distributed">$0.00</strong>
+                  </div>
+                  <div>
+                    <span data-i18n="goals.available">Ahorro disponible</span>
+                    <strong id="savings-remaining">$0.00</strong>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="distribution">
+                  <div class="distribution-header">
+                    <h4 data-i18n="goals.distribute">
+                      Distribuir ahorro del mes
+                    </h4>
+                    <select id="distribution-mode">
+                      <option value="amount" data-i18n="goals.modeAmount">
+                        Por monto
+                      </option>
+                      <option value="percent" data-i18n="goals.modePercent">
+                        Por porcentaje
+                      </option>
+                    </select>
+                  </div>
+                  <div id="distribution-list" class="distribution-list"></div>
+                  <button
+                    class="btn btn-primary"
+                    id="distribute-btn"
+                    data-i18n="goals.apply"
+                  >
+                    Aplicar distribución
+                  </button>
+                  <p class="muted" id="distribution-help"></p>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="goals.add">Nueva meta</h3>
+                </div>
+                <form id="goal-form" class="form-grid">
+                  <label>
+                    <span data-i18n="goals.name">Nombre del objetivo</span>
+                    <input
+                      type="text"
+                      id="goal-name"
+                      placeholder="Viaje, emergencia..."
+                      data-i18n-placeholder="goals.placeholder"
+                      required
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="goals.category">Categoría</span>
+                    <select id="goal-category"></select>
+                  </label>
+                  <label>
+                    <span data-i18n="goals.target">Monto objetivo</span>
+                    <input
+                      type="number"
+                      id="goal-target"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </label>
+                  <button
+                    class="btn btn-primary"
+                    type="submit"
+                    data-i18n="actions.add"
+                  >
+                    Agregar
+                  </button>
+                </form>
+                <div class="divider"></div>
+                <label class="toggle">
+                  <input type="checkbox" id="toggle-archived" />
+                  <span class="toggle-slider"></span>
+                  <span data-i18n="goals.showArchived">Mostrar archivadas</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="goals-grid" id="goals-list"></div>
+            <div class="card extra-savings-card" id="extra-savings-card">
+              <div class="card-header">
+                <h3 data-i18n="goals.extra">Ahorro extra</h3>
+                <span class="chip" id="extra-savings-total">$0.00</span>
+              </div>
+              <p class="muted" data-i18n="goals.extraHint">
+                Fondos liberados de metas eliminadas. Decide cómo
+                redistribuirlos.
+              </p>
+              <div class="form-grid two-cols">
+                <label>
+                  <span data-i18n="goals.extraAmount">Monto</span>
+                  <input
+                    type="number"
+                    id="extra-savings-amount"
+                    min="0"
+                    step="0.01"
+                  />
+                </label>
+                <label>
+                  <span data-i18n="goals.extraAction">Acción</span>
+                  <select id="extra-savings-action">
+                    <option
+                      value="distribute"
+                      data-i18n="goals.extraDistribute"
+                    >
+                      Distribuir a metas
+                    </option>
+                    <option value="available" data-i18n="goals.extraAvailable">
+                      Mover a disponible
+                    </option>
+                  </select>
+                </label>
+              </div>
+              <button
+                class="btn btn-primary"
+                id="extra-savings-apply"
+                data-i18n="goals.extraApply"
+              >
+                Aplicar
+              </button>
+            </div>
+            <div class="goals-grid archived" id="goals-archived"></div>
+          </section>
+
+          <section id="history" class="section">
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="history.title">Historial</h1>
+                <p class="muted" data-i18n="history.subtitle">
+                  Movimientos registrados por mes y objetivo.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="card filter-card">
+                <div class="card-header">
+                  <h3 data-i18n="history.filters">Filtros</h3>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span data-i18n="history.search">Buscar</span>
+                    <input
+                      type="search"
+                      id="history-search"
+                      placeholder="Nombre, motivo..."
+                      data-i18n-placeholder="history.searchPlaceholder"
+                    />
+                  </label>
+                  <label>
+                    <span data-i18n="history.type">Tipo</span>
+                    <select id="history-type">
+                      <option value="all" data-i18n="history.all">Todos</option>
+                      <option value="income" data-i18n="history.income">
+                        Ingresos
+                      </option>
+                      <option value="expense" data-i18n="history.expense">
+                        Gastos
+                      </option>
+                      <option value="goal" data-i18n="history.goal">
+                        Metas
+                      </option>
+                      <option value="savings" data-i18n="history.savings">
+                        Ahorro
+                      </option>
+                      <option value="payment" data-i18n="history.payment">
+                        Pagos
+                      </option>
+                      <option value="month" data-i18n="history.month">
+                        Cierre de mes
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    <span data-i18n="history.category">Categoría</span>
+                    <select id="history-category"></select>
+                  </label>
+                </div>
+              </div>
+
+              <div class="card history-card">
+                <div class="card-header">
+                  <h3 data-i18n="history.list">Actividad reciente</h3>
+                </div>
+                <div id="history-list" class="history-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="settings" class="section">
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="settings.title">Ajustes</h1>
+                <p class="muted" data-i18n="settings.subtitle">
+                  Personaliza tu experiencia.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="settings.preferences">Preferencias</h3>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span data-i18n="settings.currency">Moneda</span>
+                    <select id="currency-select"></select>
+                  </label>
+                  <label>
+                    <span data-i18n="settings.language">Idioma</span>
+                    <select id="language-select">
+                      <option value="en-US">English</option>
+                      <option value="es-ES">Español</option>
+                      <option value="pt-BR">Português</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span data-i18n="settings.theme">Tema</span>
+                    <select id="theme-select">
+                      <option value="light" data-i18n="settings.themeLight">
+                        Claro
+                      </option>
+                      <option value="dark" data-i18n="settings.themeDark">
+                        Oscuro
+                      </option>
+                      <option
+                        value="midnight"
+                        data-i18n="settings.themeMidnight"
+                      >
+                        Extra oscuro
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    <span data-i18n="settings.startDay">Inicio de mes</span>
+                    <input
+                      type="range"
+                      id="start-day"
+                      min="1"
+                      max="28"
+                      value="1"
+                    />
+                    <span id="start-day-value">1</span>
+                  </label>
+                  <label class="toggle">
+                    <input type="checkbox" id="use-server" />
+                    <span class="toggle-slider"></span>
+                    <span data-i18n="settings.server"
+                      >Usar servidor local (Flask)</span
+                    >
+                  </label>
+                  <div
+                    class="muted"
+                    id="server-status"
+                    data-i18n="server.disconnected"
+                  >
+                    Servidor desconectado
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <h3 data-i18n="settings.data">Datos</h3>
+                </div>
+                <div class="stack">
+                  <button
+                    class="btn btn-primary"
+                    id="export-data"
+                    data-i18n="settings.export"
+                  >
+                    Exportar JSON
+                  </button>
+                  <label
+                    class="btn btn-ghost"
+                    for="import-file"
+                    data-i18n="settings.import"
+                    >Importar JSON</label
+                  >
+                  <input
+                    type="file"
+                    id="import-file"
+                    accept="application/json"
+                  />
+                  <button
+                    class="btn btn-danger"
+                    id="clear-data"
+                    data-i18n="settings.clear"
+                  >
+                    Borrar todos los datos
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <div
+      id="goal-completion-modal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-dialog">
+        <header>
+          <h3 id="goal-completion-title">Meta completada</h3>
+          <button class="icon-button" data-modal-close aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 6l12 12M18 6l-12 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </header>
+        <p id="goal-completion-detail" class="muted"></p>
+        <div class="modal-actions">
+          <button
+            class="btn btn-primary"
+            data-goal-action="use-all"
+            data-i18n="goals.useAll"
+          >
+            Usar el ahorro (objetivo cumplido)
+          </button>
+          <button
+            class="btn btn-warning"
+            data-goal-action="use-partial"
+            data-i18n="goals.usePartial"
+          >
+            Usé parte del ahorro
+          </button>
+          <button
+            class="btn btn-ghost"
+            data-goal-action="not-used"
+            data-i18n="goals.notUsed"
+          >
+            No lo usé todavía
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="goal-adjust-modal" class="modal" role="dialog" aria-modal="true">
+      <div class="modal-dialog">
+        <header>
+          <h3 id="goal-adjust-title">Ajustar meta</h3>
+          <button class="icon-button" data-modal-close aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 6l12 12M18 6l-12 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </header>
+        <form id="goal-adjust-form" class="form-grid">
+          <label id="goal-break-choice-row" class="hidden">
+            <span data-i18n="goals.breakQuestion"
+              >¿Usaste parte de este ahorro?</span
+            >
+            <select id="goal-break-choice">
+              <option value="yes" data-i18n="goals.breakYes">
+                Sí, usé parte
+              </option>
+              <option value="no" data-i18n="goals.breakNo">No, aún no</option>
+            </select>
+          </label>
+          <label>
+            <span data-i18n="goals.adjustAmount">Monto</span>
+            <input
+              type="number"
+              id="goal-adjust-amount"
+              min="0"
+              step="0.01"
+              required
+            />
+          </label>
+          <label>
+            <span data-i18n="goals.adjustReason">Motivo</span>
+            <input
+              type="text"
+              id="goal-adjust-reason"
+              placeholder="Motivo corto"
+              data-i18n-placeholder="goals.reasonPlaceholder"
+              required
+            />
+          </label>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            data-i18n="actions.confirm"
+          >
+            Confirmar
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="close-month-modal" class="modal" role="dialog" aria-modal="true">
+      <div class="modal-dialog modal-wide">
+        <header>
+          <h3 data-i18n="close.title">Finalizar mes</h3>
+          <button class="icon-button" data-modal-close aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 6l12 12M18 6l-12 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </header>
+        <p id="close-month-summary" class="muted"></p>
+        <div class="close-month-options" id="close-month-options">
+          <div class="list-item">
+            <div>
+              <strong data-i18n="close.pendingTitle">Pagos pendientes</strong>
+              <div class="list-meta" id="close-month-pending-meta">-</div>
+            </div>
+            <div class="list-actions">
+              <label class="toggle compact">
+                <input
+                  type="radio"
+                  name="pending-action"
+                  value="move"
+                  checked
+                />
+                <span class="toggle-slider"></span>
+                <span data-i18n="close.movePending">Mover al próximo mes</span>
+              </label>
+              <label class="toggle compact">
+                <input type="radio" name="pending-action" value="overdue" />
+                <span class="toggle-slider"></span>
+                <span data-i18n="close.markOverdue">Marcar como vencidos</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button
+            class="btn btn-ghost"
+            data-modal-close
+            data-i18n="actions.cancel"
+          >
+            Cancelar
+          </button>
+          <button
+            class="btn btn-warning"
+            id="confirm-close-month"
+            data-i18n="actions.confirmClose"
+          >
+            Confirmar cierre
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="goal-delete-modal" class="modal" role="dialog" aria-modal="true">
+      <div class="modal-dialog">
+        <header>
+          <h3 data-i18n="goals.deleteTitle">Eliminar meta</h3>
+          <button class="icon-button" data-modal-close aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 6l12 12M18 6l-12 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </header>
+        <p id="goal-delete-detail" class="muted"></p>
+        <div class="modal-actions">
+          <button
+            class="btn btn-ghost"
+            data-modal-close
+            data-i18n="actions.cancel"
+          >
+            Cancelar
+          </button>
+          <button
+            class="btn btn-danger"
+            id="confirm-goal-delete"
+            data-i18n="goals.deleteConfirm"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="payment-edit-modal" class="modal" role="dialog" aria-modal="true">
+      <div class="modal-dialog">
+        <header>
+          <h3 data-i18n="payments.editTitle">Editar pago</h3>
+          <button class="icon-button" data-modal-close aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 6l12 12M18 6l-12 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </header>
+        <form id="payment-edit-form" class="form-grid">
+          <label>
+            <span data-i18n="payments.amount">Monto</span>
+            <input
+              type="number"
+              id="payment-edit-amount"
+              min="0"
+              step="0.01"
+              required
+            />
+          </label>
+          <label>
+            <span data-i18n="payments.paidAmount">Monto pagado</span>
+            <input type="number" id="payment-edit-paid" min="0" step="0.01" />
+          </label>
+          <label>
+            <span data-i18n="payments.description">Descripción</span>
+            <input type="text" id="payment-edit-description" />
+          </label>
+          <label>
+            <span data-i18n="payments.status">Estado</span>
+            <select id="payment-edit-status">
+              <option value="pending" data-i18n="payments.statusPending">
+                Pendiente
+              </option>
+              <option value="partial" data-i18n="payments.statusPartial">
+                Parcial
+              </option>
+              <option value="paid" data-i18n="payments.statusPaid">
+                Pagado
+              </option>
+              <option value="overdue" data-i18n="payments.statusOverdue">
+                Vencido
+              </option>
+            </select>
+          </label>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            data-i18n="actions.confirm"
+          >
+            Confirmar
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Payment Confirmed Modal (Success) -->
+    <div class="modal-overlay" id="payment-confirmed-modal">
+      <div class="modal">
+        <header class="modal-header">
+          <h2>✅ Pago confirmado</h2>
+          <button
+            class="icon-button modal-close"
+            data-modal="payment-confirmed-modal"
+            aria-label="Cerrar"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </header>
+        <div class="modal-body">
+          <p style="line-height: 1.6; color: var(--text);">
+            ¡Perfecto! Registramos este pago correctamente y lo agregamos automáticamente a tus <strong>Gastos Variables</strong>. Tus finanzas están actualizadas.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button
+            class="btn btn-primary"
+            data-modal="payment-confirmed-modal"
+            data-action="close"
+          >
+            Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Delete Confirmation Modal (Warning) -->
+    <div class="modal-overlay" id="payment-delete-confirm-modal">
+      <div class="modal">
+        <header class="modal-header">
+          <h2>⚠️ ¿Estás seguro?</h2>
+          <button
+            class="icon-button modal-close"
+            data-modal="payment-delete-confirm-modal"
+            aria-label="Cerrar"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </header>
+        <div class="modal-body">
+          <p style="line-height: 1.6; color: var(--text); margin-bottom: 12px;">
+            Este pago está programado para hoy.
+          </p>
+          <p style="line-height: 1.6; color: var(--muted); margin-bottom: 12px;">
+            Si aún no lo has pagado, puedes dejarlo pendiente.
+          </p>
+          <p style="line-height: 1.6; color: var(--muted);">
+            Si lo eliminas, <strong style="color: var(--text);">dejará de aparecer en tu lista</strong> y no se registrará como gasto.
+          </p>
+          <p style="line-height: 1.6; color: var(--text); margin-top: 16px; font-weight: 600;">
+            ¿Quieres continuar?
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button
+            class="btn btn-ghost"
+            data-modal="payment-delete-confirm-modal"
+            data-action="cancel"
+          >
+            Cancelar
+          </button>
+          <button
+            class="btn btn-danger"
+            id="confirm-payment-delete"
+          >
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
